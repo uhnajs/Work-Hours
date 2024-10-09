@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Kalendarz godzin pracy</title>
+    <style>
+        table {
+            width: 100%;
+        }
+        th, td {
+            width: 14%;
+            vertical-align: top;
+            border: 1px solid #ddd;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        .date {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Kalendarz godzin pracy</h1>
+    <div>
+        <a href="{% url 'calendar' year=prev_year month=prev_month %}">&lt; Poprzedni</a>
+        |
+        <a href="{% url 'calendar' year=next_year month=next_month %}">Następny &gt;</a>
+    </div>
+    {{ calendar|safe }}
+    <p><a href="{% url 'work_entries_list' %}">Powrót do listy godzin</a></p>
+</body>
+</html>

@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'hours',
+    'pwa',
 ]
 
 MIDDLEWARE = [
@@ -123,3 +124,37 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+PWA_APP_NAME = 'Work Hours Tracker'
+PWA_APP_DESCRIPTION = "Track your work hours and earnings."
+PWA_APP_THEME_COLOR = '#0A0A0A'
+PWA_APP_BACKGROUND_COLOR = '#FFFFFF'
+PWA_APP_DISPLAY = 'standalone'
+PWA_APP_SCOPE = '/'
+PWA_APP_ORIENTATION = 'any'
+PWA_APP_START_URL = '/'
+PWA_APP_STATUS_BAR_COLOR = 'default'
+PWA_APP_ICONS = [
+    {
+        'src': '/static/icons/icon-72x72.png',
+        'sizes': '72x72'
+    },
+    # Add other icon sizes
+]
+PWA_APP_ICONS_APPLE = [
+    {
+        'src': '/static/icons/icon-72x72.png',
+        'sizes': '72x72'
+    },
+    # Add other icon sizes
+]
+PWA_APP_SPLASH_SCREEN = [
+    {
+        'src': '/static/icons/splash-640x1136.png',
+        'media': '(device-width: 320px) and (device-height: 568px)'
+    },
+    # Add other splash screen sizes
+]
+PWA_SERVICE_WORKER_PATH = os.path.join(BASE_DIR, 'hours/static/js', 'serviceworker.js')
+

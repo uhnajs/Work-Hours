@@ -6,6 +6,45 @@ from .forms import WorkEntryForm
 from django.http import HttpResponse
 from django.template.loader import get_template
 from xhtml2pdf import pisa
+from django.shortcuts import render
+from django.utils.safestring import mark_safe
+from .utils import Calendar
+from datetime import date
+import calendar
+
+@login_required
+def calendar_view(request, year=None, month=None):
+    if year is None:
+        year = date.today().year
+    if month is None:
+        month = date.today().month
+
+    year = int(year)
+    month = int(month)
+
+    # Obliczenie poprzedniego i następnego miesiąca
+    prev_month = month - 1 if month > 1 else 12
+    prev_year = year if month > 1 else year - 1
+
+    next_month = month + 1 if month < 12 else 1
+    next_year = year if month < 12 else year + 1
+
+    # Nazwa miesiąca
+    month_name = calendar.month_name[month]
+
+    work_entries = WorkEntry.objects.filter(user=request.user, date__year=year, date__month=month)
+    cal = Calendar(work_entries).formatmonth(year, month)
+    context = {
+        'calendar': mark_safe(cal),
+        'year': year,
+        'month': month,
+        'month_name': month_name,
+        'prev_year': prev_year,
+        'prev_month': prev_month,
+        'next_year': next_year,
+        'next_month': next_month,
+    }
+    return render(request, 'hours/calendar.html', context)
 
 @login_required
 def work_entries_list(request):
