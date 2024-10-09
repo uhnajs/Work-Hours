@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Moje stawki godzinowe</title>
+</head>
+<body>
+    <h1>Moje stawki godzinowe</h1>
+    {% if rates %}
+        <ul>
+            {% for rate in rates %}
+                <li>{{ rate.rate }} PLN/h od {{ rate.effective_from }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Brak stawek godzinowych.</p>
+    {% endif %}
+    <p><a href="{% url 'add_hourly_rate' %}">Dodaj nową stawkę</a></p>
+    <p><a href="{% url 'work_entries_list' %}">Powrót do listy godzin</a></p>
+</body>
+</html>

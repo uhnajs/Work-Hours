@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Raport godzin pracy</title>
+</head>
+<body>
+    <h1>Raport godzin pracy</h1>
+    <table border="1">
+        <tr>
+            <th>Data</th>
+            <th>Ilość godzin</th>
+            <th>Opis</th>
+            <th>Stawka</th>
+        </tr>
+        {% for entry in entries %}
+        <tr>
+            <td>{{ entry.date }}</td>
+            <td>{{ entry.hours_worked }}</td>
+            <td>{{ entry.description }}</td>
+            <td>{{ entry.hourly_rate.rate if entry.hourly_rate else 'Brak' }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

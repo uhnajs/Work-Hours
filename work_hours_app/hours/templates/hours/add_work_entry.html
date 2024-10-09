@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Dodaj wpis godzin pracy</title>
+</head>
+<body>
+    <h1>Dodaj wpis godzin pracy</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Zapisz</button>
+    </form>
+    <p><a href="{% url 'work_entries_list' %}">Powrót do listy</a></p>
+</body>
+</html>

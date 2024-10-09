@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Moje godziny pracy</title>
+</head>
+<body>
+    {% if user.is_authenticated %}
+        <p>Witaj, {{ user.username }}! <a href="{% url 'logout' %}">Wyloguj się</a></p>
+        <h1>Moje godziny pracy</h1>
+        {% if entries %}
+            <ul>
+                {% for entry in entries %}
+                    <li>{{ entry.date }}: {{ entry.hours_worked }}h - {{ entry.description }}</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p><a href="{% url 'generate_pdf_report' %}">Pobierz raport PDF</a></p>
+
+        {% endif %}
+        <p><a href="{% url 'add_work_entry' %}">Dodaj nowy wpis</a></p>
+    {% else %}
+        <p><a href="{% url 'login' %}">Zaloguj się</a></p>
+    {% endif %}
+
+</body>
+</html>
