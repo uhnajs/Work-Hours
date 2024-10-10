@@ -1,5 +1,4 @@
 from calendar import HTMLCalendar
-from .models import WorkEntry
 
 class Calendar(HTMLCalendar):
     def __init__(self, work_entries):

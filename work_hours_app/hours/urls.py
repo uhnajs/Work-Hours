@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from .views import CustomLogoutView
 
 urlpatterns = [
     path('', views.work_entries_list, name='work_entries_list'),
@@ -9,4 +10,6 @@ urlpatterns = [
     path('report/pdf/', views.generate_pdf_report, name='generate_pdf_report'),
     path('calendar/', views.calendar_view, name='calendar'),
     path('calendar/<int:year>/<int:month>/', views.calendar_view, name='calendar'),
+    path('register/', views.register, name='register'),
+    path('logout/', CustomLogoutView.as_view(), name='logout'),
 ]

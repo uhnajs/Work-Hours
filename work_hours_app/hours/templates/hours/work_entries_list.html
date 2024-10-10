@@ -1,27 +1,42 @@
-<!DOCTYPE html>
-<html lang="pl">
-<head>
-    <meta charset="UTF-8">
-    <title>Moje godziny pracy</title>
-</head>
-<body>
-    {% if user.is_authenticated %}
-        <p>Witaj, {{ user.username }}! <a href="{% url 'logout' %}">Wyloguj się</a></p>
-        <h1>Moje godziny pracy</h1>
-        {% if entries %}
-            <ul>
-                {% for entry in entries %}
-                    <li>{{ entry.date }}: {{ entry.hours_worked }}h - {{ entry.description }}</li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <p><a href="{% url 'generate_pdf_report' %}">Pobierz raport PDF</a></p>
-            <p><a href="{% url 'calendar' %}">View Calendar</a></p>
-        {% endif %}
-        <p><a href="{% url 'add_work_entry' %}">Dodaj nowy wpis</a></p>
-    {% else %}
-        <p><a href="{% url 'login' %}">Zaloguj się</a></p>
-    {% endif %}
+{% extends 'base.html' %}
 
-</body>
-</html>
+{% block title %}Moje godziny pracy{% endblock %}
+
+{% block content %}
+    <h1>Moje godziny pracy</h1>
+    {% if entries %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Data</th>
+                    <th>Od</th>
+                    <th>Do</th>
+                    <th>Ilość godzin</th>
+                    <th>Stawka (PLN/h)</th>
+                    <th>Wypłata (PLN)</th>
+                    <th>Opis</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for entry in entries %}
+                <tr>
+                    <td>{{ entry.date }}</td>
+                    <td>{{ entry.start_time }}</td>
+                    <td>{{ entry.end_time }}</td>
+                    <td>{{ entry.hours_worked }}</td>
+                    <td>{{ entry.hourly_rate }}</td>
+                    <td>{{ entry.total_pay }}</td>
+                    <td>{{ entry.description }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <p>
+            <a href="{% url 'generate_pdf_report' %}" class="btn btn-primary">Pobierz raport PDF</a>
+            <a href="{% url 'calendar' %}" class="btn btn-secondary">Zobacz kalendarz</a>
+        </p>
+    {% else %}
+        <p>Brak wpisów godzin pracy.</p>
+    {% endif %}
+    <p><a href="{% url 'add_work_entry' %}" class="btn btn-success">Dodaj nowy wpis</a></p>
+{% endblock %}

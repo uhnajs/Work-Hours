@@ -1,16 +1,19 @@
-from django.shortcuts import render
-from .models import WorkEntry
-from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
-from .forms import WorkEntryForm
+from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth.views import LogoutView
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.template.loader import get_template
-from xhtml2pdf import pisa
-from django.shortcuts import render
 from django.utils.safestring import mark_safe
+
+from .models import WorkEntry, HourlyRate
+from .forms import WorkEntryForm, HourlyRateForm, SignUpForm
 from .utils import Calendar
+
 from datetime import date
 import calendar
+from xhtml2pdf import pisa
+
 
 @login_required
 def calendar_view(request, year=None, month=None):
@@ -22,14 +25,12 @@ def calendar_view(request, year=None, month=None):
     year = int(year)
     month = int(month)
 
-    # Obliczenie poprzedniego i następnego miesiąca
     prev_month = month - 1 if month > 1 else 12
     prev_year = year if month > 1 else year - 1
 
     next_month = month + 1 if month < 12 else 1
     next_year = year if month < 12 else year + 1
 
-    # Nazwa miesiąca
     month_name = calendar.month_name[month]
 
     work_entries = WorkEntry.objects.filter(user=request.user, date__year=year, date__month=month)
@@ -50,8 +51,6 @@ def calendar_view(request, year=None, month=None):
 def work_entries_list(request):
     entries = WorkEntry.objects.filter(user=request.user)
     return render(request, 'hours/work_entries_list.html', {'entries': entries})
-
-
 
 @login_required
 def add_work_entry(request):
@@ -93,3 +92,27 @@ def generate_pdf_report(request):
     response['Content-Disposition'] = 'attachment; filename="raport.pdf"'
     pisa.CreatePDF(html, dest=response)
     return response
+
+def register(request):
+    if request.method == 'POST':
+        form = SignUpForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data.get('username')
+            raw_password = form.cleaned_data.get('password1')
+            user = authenticate(username=username, password=raw_password)
+            if user is not None:
+                login(request, user)
+            return redirect('work_entries_list')
+    else:
+        form = SignUpForm()
+    return render(request, 'registration/register.html', {'form': form})
+
+class CustomLogoutView(LogoutView):
+    def get(self, request, *args, **kwargs):
+        return self.post(request, *args, **kwargs)
+
+def logout_view(request):
+    logout(request)
+    return redirect('login')
+

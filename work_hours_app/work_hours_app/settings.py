@@ -13,31 +13,33 @@ import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
+# Upewnij się, że BASE_DIR jest zdefiniowany tylko raz
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-3v#e*vz=q3gz7_rk-kkxo0sgsd#uk6ly5kij04in118(8t3tyh'
+SECRET_KEY = 'your-secret-key-here'  # Zamień na swój rzeczywisty klucz
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
 # Application definition
 
 INSTALLED_APPS = [
+    # Aplikacje Django
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # Twoje aplikacje
     'hours',
+    # Dodatkowe aplikacje
     'pwa',
 ]
 
@@ -45,26 +47,31 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
+    'django.middleware.locale.LocaleMiddleware',  # LocaleMiddleware powinien być przed CommonMiddleware
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django.middleware.locale.LocaleMiddleware',
 ]
 
 ROOT_URLCONF = 'work_hours_app.urls'
 
+# Konfiguracja szablonów
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        # Dodajemy ścieżkę do szablonów na poziomie projektu
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
+                # Domyślne context processors
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                # Twój własny context processor
+                'hours.context_processors.current_year',
             ],
         },
     },
@@ -72,17 +79,16 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'work_hours_app.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        # Jeśli używasz Pathlib, upewnij się, że poprawnie łączysz ścieżkę
+        'NAME': str(BASE_DIR / 'db.sqlite3'),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -102,29 +108,31 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
 LANGUAGE_CODE = 'pl'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Warsaw'
 
 USE_I18N = True
 
-USE_TZ = True
+USE_L10N = True  # Dodaj, jeśli chcesz korzystać z lokalizacji
 
+USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]  # Jeśli masz katalog 'static' na poziomie projektu
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# Konfiguracja PWA
 
 PWA_APP_NAME = 'Work Hours Tracker'
 PWA_APP_DESCRIPTION = "Track your work hours and earnings."
@@ -138,23 +146,26 @@ PWA_APP_STATUS_BAR_COLOR = 'default'
 PWA_APP_ICONS = [
     {
         'src': '/static/icons/icon-72x72.png',
-        'sizes': '72x72'
+        'sizes': '72x72x72'
     },
-    # Add other icon sizes
+    # Dodaj inne rozmiary ikon
 ]
 PWA_APP_ICONS_APPLE = [
     {
         'src': '/static/icons/icon-72x72.png',
         'sizes': '72x72'
     },
-    # Add other icon sizes
+    # Dodaj inne rozmiary ikon
 ]
 PWA_APP_SPLASH_SCREEN = [
     {
         'src': '/static/icons/splash-640x1136.png',
         'media': '(device-width: 320px) and (device-height: 568px)'
     },
-    # Add other splash screen sizes
+    # Dodaj inne rozmiary splash screen
 ]
-PWA_SERVICE_WORKER_PATH = os.path.join(BASE_DIR, 'hours/static/js', 'serviceworker.js')
+PWA_SERVICE_WORKER_PATH = os.path.join('hours', 'static', 'js', 'serviceworker.js')
 
+
+LOGIN_REDIRECT_URL = 'work_entries_list'
+LOGOUT_REDIRECT_URL = 'login'

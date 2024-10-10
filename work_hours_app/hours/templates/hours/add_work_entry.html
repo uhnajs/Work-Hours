@@ -1,16 +1,13 @@
-<!DOCTYPE html>
-<html lang="pl">
-<head>
-    <meta charset="UTF-8">
-    <title>Dodaj wpis godzin pracy</title>
-</head>
-<body>
+{% extends 'base.html' %}
+
+{% block title %}Dodaj wpis godzin pracy{% endblock %}
+
+{% block content %}
     <h1>Dodaj wpis godzin pracy</h1>
-    <form method="post">
+    <form method="post" class="mt-4">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit">Zapisz</button>
+        <button type="submit" class="btn btn-primary">Zapisz</button>
     </form>
-    <p><a href="{% url 'work_entries_list' %}">Powrót do listy</a></p>
-</body>
-</html>
+    <p><a href="{% url 'work_entries_list' %}" class="btn btn-secondary mt-3">Powrót do listy</a></p>
+{% endblock %}
