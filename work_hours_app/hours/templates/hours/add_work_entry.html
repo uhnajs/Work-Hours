@@ -3,11 +3,80 @@
 {% block title %}Dodaj wpis godzin pracy{% endblock %}
 
 {% block content %}
+<div class="container">
     <h1>Dodaj wpis godzin pracy</h1>
-    <form method="post" class="mt-4">
+    <form method="post">
         {% csrf_token %}
-        {{ form.as_p }}
+
+        <!-- Data z widgetem datepicker -->
+        <div class="form-group">
+            <label for="id_date">Date:</label>
+            <input type="text" id="datepicker" name="date" class="form-control" value="{{ form.date.value }}">
+        </div>
+
+        <!-- Czas rozpoczęcia i zakończenia z widgetami timepicker -->
+        <div class="form-group">
+            <label for="id_start_time">Start time:</label>
+            <input type="time" id="start_time" name="start_time" class="form-control" value="{{ form.start_time.value }}">
+        </div>
+
+        <div class="form-group">
+            <label for="id_end_time">End time:</label>
+            <input type="time" id="end_time" name="end_time" class="form-control" value="{{ form.end_time.value }}">
+        </div>
+
+        <!-- Automatyczne obliczanie godzin -->
+        <div class="form-group">
+            <label for="id_hours_worked">Hours worked:</label>
+            <input type="text" id="hours_worked" name="hours_worked" class="form-control" readonly>
+        </div>
+
+        <!-- Stawka godzinowa -->
+        <div class="form-group">
+            <label for="id_hourly_rate">Hourly rate:</label>
+            {{ form.hourly_rate }}
+        </div>
+
+        <!-- Opis -->
+        <div class="form-group">
+            <label for="id_description">Description:</label>
+            {{ form.description }}
+        </div>
+
         <button type="submit" class="btn btn-primary">Zapisz</button>
     </form>
-    <p><a href="{% url 'work_entries_list' %}" class="btn btn-secondary mt-3">Powrót do listy</a></p>
+</div>
 {% endblock %}
+
+<!-- Dodaj jQuery i jQuery UI dla widgetu datepicker -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+<script>
+    // Datepicker dla pola daty
+    $(function() {
+        $("#datepicker").datepicker({ dateFormat: "yy-mm-dd" });
+    });
+
+    // Automatyczne obliczanie godzin pracy
+    function calculateHoursWorked() {
+        var startTime = $("#start_time").val();
+        var endTime = $("#end_time").val();
+
+        if (startTime && endTime) {
+            var start = new Date("01/01/2020 " + startTime);
+            var end = new Date("01/01/2020 " + endTime);
+            var diff = (end - start) / (1000 * 60 * 60);  // różnica w godzinach
+
+            if (diff > 0) {
+                $("#hours_worked").val(diff.toFixed(2));  // zaokrąglij do 2 miejsc po przecinku
+            } else {
+                $("#hours_worked").val(0);
+            }
+        }
+    }
+
+    // Zdarzenia dla pól czasu, aby przeliczać godziny
+    $("#start_time, #end_time").on("change", calculateHoursWorked);
+</script>
