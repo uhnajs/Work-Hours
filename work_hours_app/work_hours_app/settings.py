@@ -167,5 +167,5 @@ PWA_APP_SPLASH_SCREEN = [
 PWA_SERVICE_WORKER_PATH = os.path.join('hours', 'static', 'js', 'serviceworker.js')
 
 
-LOGIN_REDIRECT_URL = 'work_entries_list'
+LOGIN_REDIRECT_URL = 'calendar'
 LOGOUT_REDIRECT_URL = 'login'
